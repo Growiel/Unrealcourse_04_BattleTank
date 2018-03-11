@@ -2,6 +2,7 @@
 
 #include "BattleTank.h"
 #include "TankAIController.h"
+#include "Tank.h"
 #include "TankPlayerController.h"
 
 ATank* ATankAIController::GetControlledTank() const
