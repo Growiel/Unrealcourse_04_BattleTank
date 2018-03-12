@@ -4,22 +4,6 @@
 #include "TankPlayerController.h"
 #include "Tank.h"
 
-void ATankPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-
-	auto ControlledTank = GetControlledTank();
-
-	if (!ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController is not possessing"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController is possessing: %s"), *(ControlledTank->GetName()));
-	}
-}
-
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
