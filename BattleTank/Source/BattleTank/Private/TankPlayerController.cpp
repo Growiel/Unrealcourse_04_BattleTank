@@ -24,7 +24,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	// Can't open the BP without this since the BP will tick but have no tank controlled.
-	if (!ensure(GetPawn())) { return; }
+	if (!GetPawn()) { return; }
 
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
