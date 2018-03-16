@@ -2,7 +2,17 @@
 
 #include "BattleTank.h"
 #include "TankPlayerController.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
+
+void ATankPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+
+	FoundAimingComponent(AimingComponent);
+}
 
 void ATankPlayerController::Tick(float DeltaTime)
 {
@@ -11,21 +21,18 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; }
+	// Can't open the BP without this since the BP will tick but have no tank controlled.
+	if (!ensure(GetPawn())) { return; }
+
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation; // Out parameter
 	if (GetSightRayHitLocation(HitLocation)) // Has "side-effect": it's going to line trace
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *HitLocation.ToString());
-
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 }
 
@@ -40,8 +47,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	// "De-project" the screen position of the crosshair to a world direction
 	FVector LookDirection;
 	if (GetLookDirection(ScreenLocation, LookDirection)) {
-		//UE_LOG(LogTemp, Warning, TEXT("Look direction : %s"), *LookDirection.ToString());
-
 		// Line-trace along that look direction and see what we hit (up to max range)
 		GetLookVectorHitLocation(LookDirection, HitLocation);
 	}
