@@ -2,7 +2,22 @@
 
 #include "BattleTank.h"
 #include "TankAIController.h"
+#include "Tank.h"
 #include "TankAimingComponent.h"
+
+void ATankAIController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		// Do this only if we possess a tank, not a mortar
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!PossessedTank) { return; }
+
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
+	}
+}
 
 void ATankAIController::Tick(float DeltaTime)
 {
@@ -23,4 +38,12 @@ void ATankAIController::Tick(float DeltaTime)
 	if (AimingComponent->GetFiringState() == EFiringState::Locked) {
 		AimingComponent->Fire();
 	}
+}
+
+void ATankAIController::OnPossessedTankDeath()
+{
+	auto PossessedTank = GetPawn();
+	if (!PossessedTank) { return; }
+
+	PossessedTank->DetachFromControllerPendingDestroy();
 }

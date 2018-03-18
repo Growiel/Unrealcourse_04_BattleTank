@@ -26,6 +26,8 @@ private:
 
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
 	// Start moving the barrel so that a shot would hit where the crosshair intersects the world.
 	void AimTowardsCrosshair();
 
@@ -44,4 +46,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000.f;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 };
